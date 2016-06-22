@@ -1,9 +1,15 @@
-onconnect = function(e) {
-  var port = e.ports[0];
+var connections = 0; // count active connections
 
-  port.onmessage = function(e) {
-    var workerResult = 'Result: ' + (e.data[0] * e.data[1]);
-    port.postMessage(workerResult);
-  }
+self.addEventListener("connect", function (e) {
 
-}
+	var port = e.ports[0];
+	connections++;
+
+	port.addEventListener("message", function (e) {
+        var workerResult = 'Result: ' + (e.data[0] * e.data[1]) + " connections: " + connections;
+        port.postMessage(workerResult);
+	}, false);
+
+	port.start();
+
+}, false);
